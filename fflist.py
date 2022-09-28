@@ -10,7 +10,7 @@ total_files = []
 curpath = dirname(realpath(__file__))
 
 # progress bar
-def pbar(progress, total):
+def pbar(progress, total) -> None:
 	percent = 100 * (progress / float(total))
 	bar = '+' * int(percent) + '-' * (100 - int(percent))
 	print(f"\r|{bar}| {percent:.2f}%", end="\r")
