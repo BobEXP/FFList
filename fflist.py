@@ -10,7 +10,7 @@ total_files = []
 curpath = dirname(realpath(__file__))
 
 # progress bar
-def pbar(progress, total) -> None:
+async def pbar(progress, total) -> None:
 	percent = 100 * (progress / float(total))
 	bar = '+' * int(percent) + '-' * (100 - int(percent))
 	print(f"\r|{bar}| {percent:.2f}%", end="\r")
@@ -27,7 +27,7 @@ async def save_files() -> None:
 
 
 # get the files from folder
-def get_files(dir: str) -> []:
+async def get_files(dir: str) -> []:
 	tempfiles = [f for f in listdir(dir) if isfile(join(dir, f))]
 	temptotal = dir + "/".join([temp_file for temp_file in tempfiles])[1:]
 	return temptotal
@@ -41,7 +41,7 @@ async def replace_slash(rwith: str) -> str:
 
 # append total files
 async def total_appender(dirname: str) -> None:
-	total_files.append(get_files(dirname))
+	total_files.append(await get_files(dirname))
 
 
 # init
@@ -61,13 +61,13 @@ async def init(init_dir: str, isDeep: bool) -> None:
 			dirs_raw = [x[0] for x in walk(init_dir)]
 	
 	print(f"Gathering files in {len(dirs_raw)} directories..")
-	pbar(0, len(dirs_raw))
+	await pbar(0, len(dirs_raw))
 	n = 0
 	while n <= len(dirs_raw)-1:
 		await replace_slash(dirs_raw[n])
 		await total_appender(dirs_raw[n])
 		n += 1
-		pbar(n, len(dirs_raw))
+		await pbar(n, len(dirs_raw))
 	print(f"Saving file list...")
 	await save_files()
 
