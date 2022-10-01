@@ -9,10 +9,15 @@ total_files = []
 
 global arg_pout
 
+
+# get os name
+def get_os_name() -> str:
+	import platform
+	return platform.system()
+
 # clear screen
 def sclear() -> None:
-	import platform
-	plt = platform.system()
+	plt = get_os_name()
 	match plt:
 		case "Windows":
 			system('cls')
@@ -29,10 +34,14 @@ async def convert_to_path(dirpath: str):
 
 
 # progress bar
-async def pbar(progress, total) -> None:
-	percent = 100 * (progress / float(total))
-	bar = '+' * int(percent) + '-' * (100 - int(percent))
-	print(f"\r|{bar}| {percent:.2f}%", end="\r")
+async def pbar(progress, total: float) -> None:
+	try:
+		percent = 100 * (progress / float(total))
+		bar = '+' * int(percent) + '-' * (100 - int(percent))
+		print(f"\r|{bar}| {percent:.2f}%", end="\r")
+	except ZeroDivisionError as e:
+		print(f"No Folders Found\n\nERROR: {e}")
+
 
 
 # save the list into file
@@ -79,14 +88,19 @@ async def init(init_dir: str, isDeep: bool) -> None:
 	match isDeep:
 		case True:
 			filenum = 0
-			for x in walk(init_dir):
-				dirs_raw.append(x[0])
-				filenum	+= 1
-				if filenum % 100 == 0:
-					print(f"Folders Gathered: {filenum}")
+			try:
+				for x in walk(init_dir):
+					dirs_raw.append(x[0])
+					filenum	+= 1
+					if filenum % 100 == 0:
+						print(f"Folders Gathered: {filenum}")
+			except Exception as e:
+				raise e
 		case False:
-			dirs_raw = [x[0] for x in walk(init_dir)]
-	
+			try:
+				dirs_raw = [x[0] for x in walk(init_dir)]
+			except Exception as e:
+				raise e
 	print(f"Gathering files in {len(dirs_raw)} directories..")
 	await pbar(0, len(dirs_raw))
 	n = 0
@@ -122,8 +136,17 @@ async def main() -> None:
 			except Exception as e:
 				raise e
 	if args.full:
+		plt = get_os_name()
+		sysdir = ""
+		match plt:
+			case "Windows":
+				sysdir = "C:/"
+			case "Linux":
+				sysdir = "/home/"
+			case "Darwin":
+				sysdir = "/home/"
 		try:
-			asyncio.gather(init("C:/", True))
+			asyncio.gather(init(sysdir, True))
 		except Exception as e:
 			raise e
 	if args.print:

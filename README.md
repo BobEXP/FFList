@@ -10,7 +10,7 @@
 </p>
 
 
-## Features v1.0.0.4
+## Features v1.0.0.5
 - [x] Completely Asynchronous
 - [x] Gather All System Files
 - [x] Gather Files From Specified Directory
