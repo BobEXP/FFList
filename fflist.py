@@ -1,13 +1,22 @@
 from __future__ import print_function
-from os import listdir, walk, system
+from os import scandir, walk, system
 from os.path import isfile, join, realpath, dirname
 from argparse import ArgumentParser
+from pathlib import Path
 import asyncio
+from pprint import pprint
 
 # saving all the gathered filepaths into list
 total_files = []
 
 curpath = dirname(realpath(__file__))
+
+# convert names to path
+async def convert_to_path(dirname: str):
+	dirname.encode('unicode escape')
+	p = Path(dirname)
+	return p
+
 
 # progress bar
 async def pbar(progress, total) -> None:
@@ -18,7 +27,8 @@ async def pbar(progress, total) -> None:
 
 # save the list into file
 async def save_files() -> None:
-	filepath = curpath + "/files.txt"
+	ffolder = curpath + "\\files.txt"
+	filepath = await convert_to_path(ffolder)
 	with open(filepath, 'w') as f:
 		x = 0
 		while x <= len(total_files)-1:
@@ -27,26 +37,30 @@ async def save_files() -> None:
 
 
 # get the files from folder
-async def get_files(dir: str) -> []:
-	tempfiles = [f for f in listdir(dir) if isfile(join(dir, f))]
-	temptotal = dir + "/".join([temp_file for temp_file in tempfiles])[1:]
-	return temptotal
+async def get_files(dirname: str) -> []:
+	files = []
+	f_obj = scandir(path=dirname)
+	for entry in f_obj:
+		if entry.is_file() and entry.name != None:
+			ffolder = f"{dirname}\\{entry.name}"
+			fpath = await convert_to_path(ffolder)
+			files.append(fpath)
+	return files
 
 
-# replace with slash
-async def replace_slash(rwith: str) -> str:
-	replaced = rwith.replace("\\", "/")
-	return replaced
-
-
-# append total files
+# total appender
 async def total_appender(dirname: str) -> None:
-	total_files.append(await get_files(dirname))
+	total_lists = []
+	total_lists.append(await get_files(dirname))
+	for lst in total_lists:
+		for file in lst:
+			total_files.append(file)
 
 
 # init
 async def init(init_dir: str, isDeep: bool) -> None:
 	system('cls')
+	init_dir = await convert_to_path(init_dir)
 	print(f"Gathering FileSystem Directories from {init_dir}..")
 	dirs_raw = []
 	match isDeep:
@@ -64,8 +78,8 @@ async def init(init_dir: str, isDeep: bool) -> None:
 	await pbar(0, len(dirs_raw))
 	n = 0
 	while n <= len(dirs_raw)-1:
-		await replace_slash(dirs_raw[n])
-		await total_appender(dirs_raw[n])
+		dirname = await convert_to_path(dirs_raw[n])
+		await total_appender(dirname)
 		n += 1
 		await pbar(n, len(dirs_raw))
 	print(f"Saving file list...")
@@ -84,8 +98,7 @@ async def main() -> None:
 	
 	if args.folder != "*":
 		if args.folder != None:
-			folder = await replace_slash(args.folder)
-			asyncio.gather(init(folder, False))
+			asyncio.gather(init(args.folder, False))
 		else:
 			print("Please read --help")
 
