@@ -4,7 +4,6 @@ from os.path import isfile, join, realpath, dirname
 from argparse import ArgumentParser
 from pathlib import Path
 import asyncio
-from pprint import pprint
 
 # saving all the gathered filepaths into list
 total_files = []
