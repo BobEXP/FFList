@@ -9,6 +9,18 @@ total_files = []
 
 global arg_pout
 
+# clear screen
+def sclear() -> None:
+	import platform
+	plt = platform.system()
+	match plt:
+		case "Windows":
+			system('cls')
+		case "Linux":
+			system('clear')
+		case "Darwin":
+			system('clear')
+
 # convert names to path
 async def convert_to_path(dirpath: str):
 	dirpath.encode('unicode escape')
@@ -60,7 +72,7 @@ async def total_appender(dirpath: str) -> None:
 
 # init
 async def init(init_dir: str, isDeep: bool) -> None:
-	system('cls')
+	sclear()
 	init_dir = await convert_to_path(init_dir)
 	print(f"Gathering FileSystem Directories from {init_dir}..")
 	dirs_raw = []
@@ -86,7 +98,7 @@ async def init(init_dir: str, isDeep: bool) -> None:
 	print(f"Saving file list...")
 	await save_files()
 	if arg_pout:
-		system('cls')
+		sclear()
 		for file in total_files:
 			print(file)
 
@@ -95,7 +107,7 @@ async def init(init_dir: str, isDeep: bool) -> None:
 async def main() -> None:
 	global arg_pout
 	
-	system('cls')
+	sclear()
 	parser = ArgumentParser(description="FFlist Argument Parser", add_help=True)
 	folder_group = parser.add_mutually_exclusive_group()
 	folder_group.add_argument('-dir','--directory', type=str, help="User Defined Folder")

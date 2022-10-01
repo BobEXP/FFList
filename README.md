@@ -10,16 +10,17 @@
 </p>
 
 
-## Features v1.0.0.3
+## Features v1.0.0.4
 - [x] Completely Asynchronous
 - [x] Gather All System Files
 - [x] Gather Files From Specified Directory
+- [x] Cross Platform
 - [x] Print Standard Output
 
 ## System Requirements
 
-- [x] Windows 7 / 10 / 11
-- [x] Python 3.11
+- [x] Windows / Linux / Mac
+- [x] Python 3.10+ (Preferred Python 3.11 for performance)
 
 ## Usage
 
