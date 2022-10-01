@@ -83,23 +83,31 @@ async def init(init_dir: str, isDeep: bool) -> None:
 		await pbar(n, len(dirs_raw))
 	print(f"Saving file list...")
 	await save_files()
+	system('cls')
+	for file in total_files:
+		print(file)
 
 
 # read config file
 async def main() -> None:
+	system('cls')
 	parser = ArgumentParser(description="FFlist Argument Parser", add_help=True)
-	parser.add_argument('-f','--folder', type=str, help="Use '*' for --full & 'FOLDER_PATH' for --folder")
-	parser.add_argument('-full','--full', action='store_true', help="All System Files")
+	folder_group = parser.add_mutually_exclusive_group()
+	folder_group.add_argument('-dir','--directory', type=str, help="User Defined Folder")
+	folder_group.add_argument('-full','--full', type=str, help="All System Files")
 	args = parser.parse_args()
 
+	if args.directory:
+		if args.directory != None:
+			try:
+				asyncio.gather(init(args.directory, False))
+			except Exception as e:
+				raise e
 	if args.full:
-		asyncio.gather(init("C:/", True))
-	
-	if args.folder != "*":
-		if args.folder != None:
-			asyncio.gather(init(args.folder, False))
-		else:
-			print("Please read --help")
+		try:
+			asyncio.gather(init("C:/", True))
+		except Exception as e:
+			raise e
 
 
 if __name__ == "__main__":
