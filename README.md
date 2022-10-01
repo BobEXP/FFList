@@ -6,15 +6,15 @@
 </h1>
 
 <p align="center">
-    A Fast System File Lister written in Python
+    A Fast Asynchronous System File Lister
 </p>
 
 
-## Features v1.0.0.1
+## Features v1.0.0.3
 - [x] Completely Asynchronous
 - [x] Gather All System Files
 - [x] Gather Files From Specified Directory
-- [x] Recursive File Collection
+- [x] Print Standard Output
 
 ## System Requirements
 
@@ -23,19 +23,19 @@
 
 ## Usage
 
-```python
+```bash
 git clone --depth=1 https://github.com/BobEXP/FFList
 ```
 
-```python
+```bash
 cd FFList
 ```
 
-```python
+```bash
 python -m pip install requirements.txt
 ```
 
-```python
+```bash
 python fflist.py --help
 ```
 
@@ -43,14 +43,20 @@ python fflist.py --help
 
 #### Gather All System Files
 
-```python
-python fflist.py -f "*" -full
+```bash
+python fflist.py -full
 ```
 
 #### Gather files from specific directory recursive
 
-```python
-python fflist.py -f "C:/Program Files/"
+```bash
+python fflist.py -dir "C:/Program Files/"
+```
+
+#### Gather files & Print output
+
+```bash
+python fflist.py -dir "C:/Program Files/" -print
 ```
 
 ## License
