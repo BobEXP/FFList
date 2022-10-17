@@ -15,6 +15,7 @@ def get_os_name() -> str:
 	import platform
 	return platform.system()
 
+
 # clear screen
 def sclear() -> None:
 	plt = get_os_name()
@@ -25,6 +26,7 @@ def sclear() -> None:
 			system('clear')
 		case "Darwin":
 			system('clear')
+
 
 # convert names to path
 async def convert_to_path(dirpath: str):
@@ -41,7 +43,6 @@ async def pbar(progress, total: float) -> None:
 		print(f"\r|{bar}| {percent:.2f}%", end="\r")
 	except ZeroDivisionError as e:
 		print(f"No Folders Found\n\nERROR: {e}")
-
 
 
 # save the list into file
