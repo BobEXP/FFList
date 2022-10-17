@@ -9,8 +9,8 @@
     A Fast Asynchronous System File Lister
 </p>
 
-
 ## Features v1.0.0.5
+
 - [x] Completely Asynchronous
 - [x] Gather All System Files
 - [x] Gather Files From Specified Directory
@@ -20,7 +20,7 @@
 ## System Requirements
 
 - [x] Windows / Linux / Mac
-- [x] Python 3.10+ (Preferred Python 3.11 for performance)
+- [x] Python 3.11
 
 ## Usage
 
