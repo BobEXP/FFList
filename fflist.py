@@ -7,9 +7,6 @@ import asyncio
 # saving all the gathered filepaths into list
 total_files = []
 
-global arg_pout
-
-
 # get os name
 def get_os_name() -> str:
 	import platform
@@ -43,6 +40,16 @@ async def pbar(progress, total: float) -> None:
 		print(f"\r|{bar}| {percent:.2f}%", end="\r")
 	except ZeroDivisionError as e:
 		print(f"No Folders Found\n\nERROR: {e}")
+
+
+# read lines from files
+def readfilelines(filepath: str) -> []:
+	try:
+		with open(filepath, 'r') as f:
+			lines = [x.rstrip() for x in f.readlines()]
+		return lines
+	except Exception as e:
+		raise e
 
 
 # save the list into file
@@ -112,22 +119,16 @@ async def init(init_dir: str, isDeep: bool) -> None:
 		await pbar(n, len(dirs_raw))
 	print(f"Saving file list...")
 	await save_files()
-	if arg_pout:
-		sclear()
-		for file in total_files:
-			print(file)
 
 
 # read config file
 async def main() -> None:
-	global arg_pout
-	
 	sclear()
 	parser = ArgumentParser(description="FFlist Argument Parser", add_help=True)
 	folder_group = parser.add_mutually_exclusive_group()
 	folder_group.add_argument('-dir','--directory', type=str, help="User Defined Folder")
+	folder_group.add_argument('-r','--read', type=str, help="User Defined Folders From File [EX: dirs.txt]")
 	folder_group.add_argument('-full','--full', action="store_true", help="All System Files")
-	parser.add_argument('-print','--print', action="store_true", help="Print Output")
 	args = parser.parse_args()
 
 	if args.directory:
@@ -136,6 +137,13 @@ async def main() -> None:
 				asyncio.gather(init(args.directory, False))
 			except Exception as e:
 				raise e
+	if args.read:
+		read_tasks = []
+		if args.read != None:
+			dirs = readfilelines(args.read)
+			for _dir in dirs:
+				read_tasks.append(asyncio.create_task(init(_dir, False)))
+			runs = await asyncio.gather(*read_tasks, return_exceptions=True)
 	if args.full:
 		plt = get_os_name()
 		sysdir = ""
@@ -150,10 +158,6 @@ async def main() -> None:
 			asyncio.gather(init(sysdir, True))
 		except Exception as e:
 			raise e
-	if args.print:
-		arg_pout = True
-	else:
-		arg_pout = False
 
 
 if __name__ == "__main__":
