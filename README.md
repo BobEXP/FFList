@@ -9,12 +9,13 @@
     A Fast Asynchronous System File Lister
 </p>
 
-## Features v1.0.0.6
+## Features v1.0.0.7
 
 - [x] Completely Asynchronous
 - [x] Gather All System Files
 - [x] Gather Files From Specified Directory
 - [x] Gather Files From List Of Directories
+- [x] Print Output
 - [x] Cross Platform
 
 ## System Requirements
@@ -60,6 +61,12 @@ python fflist.py -dir "C:/Program Files/"
 
 ```bash
 python fflist.py -read dirs.txt
+```
+
+- Print output after gathering files from list of directories
+
+```bash
+python fflist.py -r dirs.txt -print
 ```
 
 ## License

@@ -7,6 +7,8 @@ import asyncio
 # saving all the gathered filepaths into list
 total_files = []
 
+global printout
+
 # get os name
 def get_os_name() -> str:
 	import platform
@@ -52,6 +54,14 @@ def readfilelines(filepath: str) -> []:
 		raise e
 
 
+# print output
+async def print_output():
+	sclear()
+	fpath = str(Path.cwd()) + "/files.txt"
+	fpath = await convert_to_path(fpath)
+	print(readfilelines(fpath))
+
+
 # save the list into file
 async def save_files() -> None:
 	ffolder = str(Path.cwd()) + "/files.txt"
@@ -64,6 +74,8 @@ async def save_files() -> None:
 			except Exception as e:
 				pass
 			x += 1
+	if printout == True:
+		await print_output()
 
 
 # get the files from folder
@@ -123,13 +135,20 @@ async def init(init_dir: str, isDeep: bool) -> None:
 
 # read config file
 async def main() -> None:
+	global printout
 	sclear()
 	parser = ArgumentParser(description="FFlist Argument Parser", add_help=True)
 	folder_group = parser.add_mutually_exclusive_group()
 	folder_group.add_argument('-dir','--directory', type=str, help="User Defined Folder")
 	folder_group.add_argument('-r','--read', type=str, help="User Defined Folders From File [EX: dirs.txt]")
 	folder_group.add_argument('-full','--full', action="store_true", help="All System Files")
+	parser.add_argument('-print','--print', action="store_true", help="Print Output")
 	args = parser.parse_args()
+
+	if args.print:
+		printout = True
+	else:
+		printout = False
 
 	if args.directory:
 		if args.directory != None:
