@@ -3,6 +3,7 @@ from os import scandir, walk, system
 from argparse import ArgumentParser
 from pathlib import Path
 import asyncio
+import platform
 
 # saving all the gathered filepaths into list
 total_files = []
@@ -11,20 +12,16 @@ global printout
 
 # get os name
 def get_os_name() -> str:
-	import platform
 	return platform.system()
 
 
 # clear screen
 def sclear() -> None:
 	plt = get_os_name()
-	match plt:
-		case "Windows":
-			system('cls')
-		case "Linux":
-			system('clear')
-		case "Darwin":
-			system('clear')
+	if plt == "Windows":
+		system('cls')
+	elif plt in ["Linux", "Darwin"]:
+		system('clear')
 
 
 # convert names to path
@@ -67,13 +64,11 @@ async def save_files() -> None:
 	ffolder = str(Path.cwd()) + "/files.txt"
 	filepath = await convert_to_path(ffolder)
 	with open(filepath, 'w') as f:
-		x = 0
-		while x <= len(total_files)-1:
+		for file in total_files:
 			try:
-				f.write(f"{total_files[x]}\n")
+				f.write(f"{file}\n")
 			except Exception as e:
 				pass
-			x += 1
 	if printout == True:
 		await print_output()
 
